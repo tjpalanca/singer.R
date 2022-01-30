@@ -14,4 +14,14 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 URL: https://github.com/tjpalanca/singer.R
 BugReports: https://github.com/tjpalanca/singer.R/issues
-
+Imports: 
+    checkmate,
+    dplyr,
+    fs,
+    glue,
+    jsonlite,
+    magrittr,
+    processx,
+    reticulate,
+    tibble,
+    tools
