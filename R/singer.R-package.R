@@ -2,6 +2,8 @@
 "_PACKAGE"
 
 ## usethis namespace: start
+#' @importFrom checkmate assert_character
+#' @importFrom checkmate assert_class
 #' @importFrom checkmate assert_list
 #' @importFrom checkmate assert_posixct
 #' @importFrom checkmate assert_string
@@ -13,6 +15,7 @@
 #' @importFrom magrittr %$%
 #' @importFrom magrittr set_attr
 #' @importFrom processx run
+#' @importFrom purrr map
 #' @importFrom reticulate virtualenv_create
 #' @importFrom reticulate virtualenv_exists
 #' @importFrom reticulate virtualenv_install
@@ -22,7 +25,7 @@
 ## usethis namespace: end
 NULL
 
-object <- function(x, ..., class = character()) {
+new_object <- function(x, ..., class = character()) {
     structure(x, ..., class = c(class, "singer"))
 }
 

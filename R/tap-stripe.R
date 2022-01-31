@@ -22,4 +22,7 @@ pip_name.tap_stripe <- \(t) "tap-stripe"
 #' @export
 pip_vers.tap_stripe <- \(t) "1.5.1"
 
+#' @export
+discover.tap_stripe <- function(t) {
 
+}

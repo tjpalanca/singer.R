@@ -1,6 +1,7 @@
-pip_list <- function(envname) {
+#' List installed `pip` packages
+pip_list <- function(python) {
   run(
-    command = virtualenv_python(envname),
+    command = python,
     args    = c("-m", "pip", "list", "--format", "json"),
     stdout  = "|",
     stderr  = NULL

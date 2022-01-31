@@ -6,3 +6,6 @@ new_tap <- function(x, ..., class = character()) {
 is_installed <- \(t, ...) UseMethod("is_installed")
 install <- \(t, ...) UseMethod("install")
 uninstall <- \(t, ...) UseMethod("uninstall")
+
+discover <- \(t, ...) UseMethod("discover")
+is_discovered <- \(t, ...) UseMethod("discover")

@@ -10,9 +10,6 @@ env_path <- \(t, ...) UseMethod("env_path")
 bin_path <- \(t) UseMethod("bin_path")
 pip_path <- \(t) UseMethod("pip_path")
 
-config_path  <- \(t) UseMethod("config_path")
-write_config <- \(t) UseMethod("write_config")
-
 #' @export
 bin_name.python_tap <- \(t) pip_name(t)
 
@@ -21,9 +18,6 @@ pip_path.python_tap <- \(t) paste0(pip_name(t), "==", pip_vers(t))
 
 #' @export
 env_path.python_tap <- \(t, ...) pkg_data_dir("virtualenvs", env_name(t), ...)
-
-#' @export
-config_path.python_tap <- \(t) env_path(t, "config.json")
 
 #' @export
 bin_path.python_tap <- \(t) env_path(t, "bin", bin_name(t))
@@ -40,10 +34,13 @@ install.python_tap <- function(t, force = FALSE) {
 is_installed.python_tap <- function(t) {
   env_exists <- virtualenv_exists(env_path(t))
   if (env_exists) {
-    installed <- filter(pip_list(env_path(t)), name == !!pip_name(t))
-    (nrow(installed) == 1) && (installed$version == pip_vers(t))
+    installed <- filter(
+      pip_list(virtualenv_python(env_path(t))),
+      name == !!pip_name(t)
+    )
+    return((nrow(installed) == 1) && (installed$version == pip_vers(t)))
   } else {
-    FALSE
+    return(FALSE)
   }
 }
 
