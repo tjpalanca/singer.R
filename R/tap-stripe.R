@@ -14,15 +14,10 @@ tap_stripe <- function(start_date,
 }
 
 #' @export
-env_name.tap_stripe <- \(t) "tap_stripe"
+env_name.tap_stripe <- function(t) "tap_stripe"
 
 #' @export
-pip_name.tap_stripe <- \(t) "tap-stripe"
+pip_name.tap_stripe <- function(t) "tap-stripe"
 
 #' @export
-pip_vers.tap_stripe <- \(t) "1.5.1"
-
-#' @export
-discover.tap_stripe <- function(t) {
-
-}
+pip_vers.tap_stripe <- function(t) "1.5.1"

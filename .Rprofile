@@ -14,7 +14,7 @@ if (Sys.getenv("R_CONFIG_ACTIVE") == "dev") {
   }
 
   dr <- function(clear = FALSE, reset = FALSE, ...) {
-    devtools::document()
+    suppressWarnings(devtools::document())
     r(clear = clear, reset = reset, ...)
   }
 

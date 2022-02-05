@@ -1,49 +1,57 @@
+# Constructor -------------------------------------------------------------
+
 new_python_tap <- function(x, ..., class = character()) {
-  new_tap(x, ..., class = c(class, "python_tap"))
+  new_tap(x, ..., class = c(class, "python_tap", "python"))
 }
 
-env_name <- \(t) UseMethod("env_name")
-pip_name <- \(t) UseMethod("pip_name")
-pip_vers <- \(t) UseMethod("pip_vers")
-bin_name <- \(t) UseMethod("bin_name")
-env_path <- \(t, ...) UseMethod("env_path")
-bin_path <- \(t) UseMethod("bin_path")
-pip_path <- \(t) UseMethod("pip_path")
+# Interface ---------------------------------------------------------------
+
+catalog_path <- function(t) UseMethod("catalog_path")
+state_path   <- function(t) UseMethod("state_path")
+discovered   <- function(t) UseMethod("discovered")
+discover     <- function(t) UseMethod("discover")
+catalog      <- function(t) UseMethod("catalog")
+invoke       <- function(t) UseMethod("invoke")
+
+# Methods -----------------------------------------------------------------
 
 #' @export
-bin_name.python_tap <- \(t) pip_name(t)
+catalog_path.python_tap <- function(t) env_path(t, "catalog.json")
 
 #' @export
-pip_path.python_tap <- \(t) paste0(pip_name(t), "==", pip_vers(t))
+state_path.python_tap <- function(t) env_path(t, "state.json")
 
 #' @export
-env_path.python_tap <- \(t, ...) pkg_data_dir("virtualenvs", env_name(t), ...)
-
-#' @export
-bin_path.python_tap <- \(t) env_path(t, "bin", bin_name(t))
-
-#' @export
-install.python_tap <- function(t, force = FALSE) {
-  if (!is_installed(t) & !force) {
-    virtualenv_create(env_path(t))
-    virtualenv_install(env_path(t), pip_path(t), ignore_installed = !force)
-  }
-}
-
-#' @export
-is_installed.python_tap <- function(t) {
-  env_exists <- virtualenv_exists(env_path(t))
-  if (env_exists) {
-    installed <- filter(
-      pip_list(virtualenv_python(env_path(t))),
-      name == !!pip_name(t)
-    )
-    return((nrow(installed) == 1) && (installed$version == pip_vers(t)))
-  } else {
-    return(FALSE)
-  }
+catalog.python_tap <- function(t) {
+  write_json(t$config, config_path(t))
+  run(
+    command = bin_path(t),
+    args    = c("--config", config_path(t), "--discover"),
+    stderr  = NULL
+  ) %$%
+    stdout %>%
+    from_json() %>%
+    as_catalog()
 }
 
 #' @export
-uninstall.python_tap <- function(t) virtualenv_remove(env_path(t))
+discovered.python_tap <- function(t) !is.null(t$catalog)
+
+#' @export
+discover.python_tap <- function(t) {
+  assert_true(installed(t))
+  inset2(t, "catalog", catalog(t))
+}
+
+#' @export
+select.python_tap <- function(t, ...) {
+  assert_true(discovered(t))
+  reduce(
+    list(...),
+    ~inset2(.x, "catalog", select(.x$catalog, .y)),
+    .init = t
+  )
+}
+
+
 

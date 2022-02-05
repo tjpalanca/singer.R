@@ -6,6 +6,6 @@ pip_list <- function(python) {
     stdout  = "|",
     stderr  = NULL
   ) %$% stdout %>%
-    fromJSON() %>%
+    from_json(simplify = TRUE) %>%
     as_tibble()
 }
